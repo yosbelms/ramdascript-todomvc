@@ -1,0 +1,16 @@
+
+// refresh filter
+(def refresh (fn []
+    (call
+        (pipe
+            (slice 1 Infinity)
+            (when 
+                (anyPass [
+                    (equals '')
+                    (equals 'active')
+                    (equals 'completed')])
+                (app.stateSet 'filter')))
+         location.hash
+)))
+
+((window.addEventListener.bind window) 'hashchange' refresh)

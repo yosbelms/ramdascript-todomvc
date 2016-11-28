@@ -1,0 +1,99 @@
+
+(def d app.dom)
+
+// Todo item view
+(alter Item (fn [todo]
+    (d.li {:className (getItemCls todo)} [
+        (d.div {:className 'view'} [
+            (d.input {
+                : className 'toggle'
+                : type      'checkbox'
+                : checked   todo.completed
+                : onChange  (handleItemCheck todo) })
+            (d.label {
+                : className 'completed'
+                : onDoubleClick (handleLabelDoubleClick todo) }
+                todo.title)
+            (d.button {
+                : className 'destroy'
+                : onClick   (handleDestroyClick todo) })])
+        (d.input {
+            : className 'edit'
+            : value     (app.stateGet 'editingText')
+            : onChange  handleInputChange
+            : onKeyDown handleInputKeydown
+            : onBlur    commitChanges }) ])))
+
+
+(def handleItemCheck (fn [todo e]
+    (app.toggle todo e.target.checked)))
+
+
+(def handleDestroyClick (fn [todo e]
+    (app.destroy todo)))
+
+// whether a tod is being edited
+(def isBeingEdited
+    (propSatisfies
+        (fn [id]
+            (equals (app.stateGet 'editing') id)) 'id'))
+
+
+(def getItemEditingCls
+    (cond [
+        [isBeingEdited (always 'editing ')]
+        [T             (always '')]]))
+
+
+(def getItemCompletedCls
+    (cond [
+        [(propEq 'completed' true) (always 'completed ')]
+        [T                         (always '')]]))
+
+// get items css classes
+(def getItemCls
+    (converge
+        concat
+        [getItemCompletedCls getItemEditingCls]))
+
+// on start editing a todo
+(def handleLabelDoubleClick (fn [todo, e]
+    (app.state
+        (merge
+            (app.state) {
+            : 'editingText' todo.title
+            : 'editing'     todo.id }))))
+
+// when editing a todo
+(def handleInputChange
+    (pipe
+        (path ['target' 'value'])
+        (app.stateSet 'editingText')))
+
+// commit changes when editing a todo
+(def commitChanges (fn []
+    (app.state
+        (merge
+            (app.state) {
+            : editing nil
+            : todos (map
+                        (ifElse
+                            (propEq 'id'   (app.stateGet 'editing'))
+                            (assoc 'title' (app.stateGet 'editingText'))
+                            (identity))
+                        (app.stateGet 'todos')) }))))
+
+
+(def cancelChanges (fn []
+    (app.stateSet 'editing' nil)))
+
+
+(def handleInputKeydown
+    (cond [
+        [(both
+            (propEq 'keyCode' app.ENTER_KEY)
+            (fn [] (not (isEmpty (app.stateGet 'editingText'))))) commitChanges]
+        [(propEq 'keyCode' app.ESCAPE_KEY)                        cancelChanges]]))
+
+
+(alter app.Item Item)

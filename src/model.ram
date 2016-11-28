@@ -1,0 +1,107 @@
+
+(def storage app.storage)
+
+// default data
+(def appData (defaultTo {
+    : title       ''
+    : todos       []
+    : filter      ''
+    : editing     nil
+    : editingText '' }))
+
+// load data storage
+(def state
+    (flyd.stream (appData
+                    (storage.get))))
+
+// shortcut to get todos
+(def todos (fn []
+    (stateGet 'todos')))
+
+// get a value from state
+(def stateGet (fn [key]
+    (prop key (state))))
+
+// set a value in the state
+(def stateSet (fn [key, data]
+    (state
+        (assoc key data (state)))))
+
+// generate new id
+(def lastId 0)
+(def genId (fn []
+    (alter lastId
+        (inc lastId))))
+
+// set a todo completed
+(def toggle (fn [todo completed]
+    (stateSet 'todos'
+        (map
+            (cond [
+                [(propEq 'id' todo.id) (assoc 'completed' completed)]
+                [T identity] ])
+            (todos)))))
+
+// destory todo
+(def destroy (fn [todo]
+    (stateSet 'todos'
+        (reject
+            (propEq 'id' todo.id)
+            (todos)))))
+
+// destory completed todos
+(def destroyCompleted (fn []
+    (stateSet 'todos'
+        (reject
+            (propEq 'completed' true)
+            (todos)))))
+
+// set all todos completed
+(def toggleAll (fn [completed]
+    (stateSet 'todos'
+        (map
+            (assoc 'completed' completed)
+            (todos)))))
+
+// get todos regarding the current filter
+(def getTodos (fn []
+    (call
+        (cond [
+            [(equals '')          todos]
+            [(equals 'completed') (compose (filter (propEq 'completed' true))  todos)]
+            [(equals 'active')    (compose (filter (propEq 'completed' false)) todos)]
+        ])
+        (stateGet 'filter') )))
+
+// add new todo
+(def addTodo (fn [t]
+    (state
+        (merge
+            (state)
+            {
+            : title ''
+            : todos (append {
+                : id        (genId)
+                : title     t
+                : completed false }
+                (stateGet 'todos'))}))))
+
+
+// save to local storage on strema change
+(flyd.on (fn [data]
+    (storage.save data)) state)
+
+
+// publish
+(alter app (merge app {
+    : state            state
+    : stateGet         stateGet
+    : stateSet         stateSet
+    : toggle           toggle
+    : toggleAll        toggleAll
+    : destroy          destroy
+    : destroyCompleted destroyCompleted
+    : toggleAll        toggleAll
+    : getTodos         getTodos
+    : addTodo          addTodo
+}))

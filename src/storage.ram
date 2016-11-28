@@ -1,0 +1,22 @@
+
+(def namespace 'todos-ramdascript')
+
+// retrieve data
+(def get (fn []
+    (JSON.parse
+        (call
+            (defaultTo nil)
+            (localStorage.getItem namespace)))))
+
+// save data
+(def save (fn [data]
+    (call
+        (unless
+            (isEmpty)
+            (fn [] (localStorage.setItem namespace (JSON.stringify data))))
+         data)))
+
+// export
+(alter app.storage {
+    : get  get
+    : save save })

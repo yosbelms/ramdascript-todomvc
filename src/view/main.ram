@@ -1,0 +1,72 @@
+
+// reference React factories
+(def d app.dom)
+
+// Main view
+(def Main (fn [todos]
+    (d.section {:className 'todoapp'} [
+        (d.header {:className 'header'} [
+            (d.h1 {} 'todos')
+            (d.input {
+                : value       (app.stateGet 'title')
+                : className   'new-todo'
+                : placeholder 'What needs to be done?'
+                : onChange    handleChange
+                : onKeyDown   handleKeydown }) ])
+        (d.section {
+            : className (mainCls) } [
+            (d.input {
+                : className 'toggle-all'
+                : type      'checkbox'
+                : onClick   handleToggleAll })
+            (d.ul {:className 'todo-list'}
+                (map app.Item (app.getTodos))) ])
+        (getFooter todos) ])))
+
+
+// css class of main section
+(def mainCls (fn []
+    (call (ifElse 
+                (pipe
+                    app.stateGet
+                    length
+                    not)
+                (always 'main hidden')
+                (always 'main'))
+           'todos')))
+
+
+// returns the footer
+// if there is todos
+(def getFooter
+    (when
+        (pipe
+            length
+            (lt 0))
+        app.Footer))
+
+// create a new todo on enter
+(def handleKeydown
+    (when
+        (both
+            (propEq 'keyCode' app.ENTER_KEY)
+            (fn [] (not (isEmpty (app.stateGet 'title')))))
+        (fn []
+            (app.addTodo (app.stateGet 'title')))))
+
+(def handleToggleAll
+    (pipe
+        (path ['target' 'checked'])
+        app.toggleAll ))
+
+// update title
+(def handleChange
+    (pipe
+        (path ['target' 'value'])
+        (app.stateSet 'title')))
+
+(def render (fn []
+    (console.log 'render')
+    (ReactDOM.render (Main (app.stateGet 'todos')) (document.getElementById 'root'))))
+
+(flyd.on render app.state)

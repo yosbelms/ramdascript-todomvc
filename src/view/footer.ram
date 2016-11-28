@@ -1,0 +1,48 @@
+
+(def d app.dom)
+
+// Foter view
+(def Footer (fn []
+    (d.footer {:className 'footer'} [
+        (d.span {:className 'todo-count'}
+            (d.strong {} (getItemsLeft) ))
+        (d.ul {:className 'filters'} [
+            (d.li {} (d.a {
+                : href '#'
+                : className (selectedCls '') } 'All'))
+            (d.li {} (d.a {
+                : href '#active'
+                : className (selectedCls 'active') } 'Active'))
+            (d.li {} (d.a {
+                : href '#completed'
+                : className (selectedCls 'completed') } 'Completed')) ])
+        (d.button {
+            : className 'clear-completed'
+            : onClick   app.destroyCompleted }
+            'Clear completed') ])))
+
+// translate filter to css class 
+(def selectedCls (fn [f]
+    (call (ifElse
+        (equals (app.stateGet 'filter'))
+        (always 'selected')
+        (always '')) f)))
+
+// get footer text
+(def getItemsLeft (fn []
+    (call
+        (pipe
+            (reduce (fn [a x]
+                (call (ifElse
+                    (propEq 'completed' false)
+                    (fn [] (inc a))
+                    (always a)) x)) 0)
+            toString
+            (cond [
+                [(equals '1') (concat _ ' item left')]
+                [T            (concat _ ' items left')] ]))
+        (app.stateGet 'todos'))))
+
+
+// publish
+(alter app.Footer Footer)
