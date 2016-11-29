@@ -33,8 +33,19 @@ var stateSet = R.curry(function (key, data) {
 
 var lastId = 0
 
+var rand = function () {
+    return R.slice(2, 12, 
+        R.toString(
+            Math.random()))
+}
+
+var idPrefix = R.concat(
+    rand(), 
+    rand())
+
 var genId = function () {
-    return (function ($val) { return lastId = $val })(R.inc(lastId))
+    return R.concat(idPrefix, 
+        (function ($val) { return lastId = $val })(R.inc(lastId)))
 }
 
 var toggle = R.curry(function (todo, completed) {

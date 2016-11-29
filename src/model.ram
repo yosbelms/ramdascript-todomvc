@@ -27,11 +27,19 @@
     (state
         (assoc key data (state)))))
 
-// generate new id
 (def lastId 0)
+(def rand (fn []
+    (slice 2 12 (toString (Math.random)))))
+
+// setup id prefix
+(def idPrefix (concat (rand) (rand)))
+
+// generate new id
 (def genId (fn []
-    (alter lastId
-        (inc lastId))))
+    (concat
+        idPrefix
+        (alter lastId
+            (inc lastId)))))
 
 // set a todo completed
 (def toggle (fn [todo completed]
