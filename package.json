@@ -1,0 +1,17 @@
+{
+  "name": "ramdascript-todomvc",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ramdascript": "^0.5.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-dom-factories": "^1.0.1",
+    "flyd": "^0.2.4",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "ramdascript-loader": ">=1.1.0"
+  }
+}

@@ -15,8 +15,3 @@
             (isEmpty)
             (fn [] (localStorage.setItem namespace (JSON.stringify data))))
          data)))
-
-// export
-(alter app.storage {
-    : get  get
-    : save save })

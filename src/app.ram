@@ -1,10 +1,11 @@
-// Declare globals
+(import 'flyd'        flyd)
+(import './model'     model)
+(import './view/main' [Main])
+(import 'react-dom'   ReactDOM)
+(import './routes'    routes)
 
-(alter window.app {
-    : ENTER_KEY  13
-    : ESCAPE_KEY 27
-    : dom (pick [
-        'ul'     'label'  'button'
-        'input'  'li'     'div'
-        'header' 'footer' 'span'
-        'strong' 'h1'     'section' 'a'] React.DOM)})
+(def render (fn []
+    (console.log 'render')
+    (ReactDOM.render (Main (model.stateGet 'todos')) (document.getElementById 'root'))))
+
+(flyd.on render model.state)

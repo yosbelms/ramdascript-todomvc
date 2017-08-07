@@ -1,5 +1,7 @@
 
-(def storage app.storage)
+(import 'flyd' flyd)
+(import './storage' storage)
+
 
 // default data
 (def appData (defaultTo {
@@ -98,18 +100,3 @@
 // save to local storage on strema change
 (flyd.on (fn [data]
     (storage.save data)) state)
-
-
-// publish
-(alter app (merge app {
-    : state            state
-    : stateGet         stateGet
-    : stateSet         stateSet
-    : toggle           toggle
-    : toggleAll        toggleAll
-    : destroy          destroy
-    : destroyCompleted destroyCompleted
-    : toggleAll        toggleAll
-    : getTodos         getTodos
-    : addTodo          addTodo
-}))

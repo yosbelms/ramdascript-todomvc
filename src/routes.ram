@@ -1,4 +1,6 @@
 
+(import './model' model)
+
 // refresh filter
 (def refresh (fn []
     (call
@@ -9,7 +11,7 @@
                     (equals '')
                     (equals 'active')
                     (equals 'completed')])
-                (app.stateSet 'filter')))
+                (model.stateSet 'filter')))
          location.hash
 )))
 

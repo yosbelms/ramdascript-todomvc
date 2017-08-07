@@ -1,6 +1,10 @@
 
-// reference React factories
-(def d app.dom)
+(import '../model' model)
+(import './item'   [Item])
+(import './footer' [Footer])
+
+(import '../util' util)
+(import 'react-dom-factories' d)
 
 // Main view
 (def Main (fn [todos]
@@ -8,7 +12,7 @@
         (d.header {:className 'header'} [
             (d.h1 {} 'todos')
             (d.input {
-                : value       (app.stateGet 'title')
+                : value       (model.stateGet 'title')
                 : className   'new-todo'
                 : placeholder 'What needs to be done?'
                 : onChange    handleChange
@@ -20,7 +24,7 @@
                 : type      'checkbox'
                 : onClick   handleToggleAll })
             (d.ul {:className 'todo-list'}
-                (map app.Item (app.getTodos))) ])
+                (map Item (model.getTodos))) ])
         (getFooter todos) ])))
 
 
@@ -28,7 +32,7 @@
 (def mainCls (fn []
     (call (ifElse 
                 (pipe
-                    app.stateGet
+                    model.stateGet
                     length
                     not)
                 (always 'main hidden')
@@ -43,30 +47,24 @@
         (pipe
             length
             (lt 0))
-        app.Footer))
+        Footer))
 
 // create a new todo on enter
 (def handleKeydown
     (when
         (both
-            (propEq 'keyCode' app.ENTER_KEY)
-            (fn [] (not (isEmpty (app.stateGet 'title')))))
+            (propEq 'keyCode' util.ENTER_KEY)
+            (fn [] (not (isEmpty (model.stateGet 'title')))))
         (fn []
-            (app.addTodo (app.stateGet 'title')))))
+            (model.addTodo (model.stateGet 'title')))))
 
 (def handleToggleAll
     (pipe
         (path ['target' 'checked'])
-        app.toggleAll ))
+        model.toggleAll ))
 
 // update title
 (def handleChange
     (pipe
         (path ['target' 'value'])
-        (app.stateSet 'title')))
-
-(def render (fn []
-    (console.log 'render')
-    (ReactDOM.render (Main (app.stateGet 'todos')) (document.getElementById 'root'))))
-
-(flyd.on render app.state)
+        (model.stateSet 'title')))

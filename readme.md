@@ -1,11 +1,30 @@
 # RamdaScript • [TodoMVC](http://todomvc.com) example using React, Flyd
 
-## Usage
-Clone the repository, ` index.html` can be served as file.
+## Build
 
-RamdaScript sourcecode resides in `src/`.
+Clone the repo
+```shell
+git clone https://github.com/yosbelms/ramdascript-todomvc.git
+```
 
-To recompile the source, make sure you have [RamdaScript](https://github.com/yosbelms/ramdascript) installed and run `ram compile -src ./src -dst ./js -wrap closure` from inside the folder.
+Intall dependencies
+```shell
+npm install
+```
+
+Install Webpack
+```shell
+npm install -g webpack
+```
+
+Run Webpack
+```shell
+webpack
+```
+
+At this point you must serve `index.html`
+
+RamdaScript source-code resides in `src/`.
 
 ## Resources
 

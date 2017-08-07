@@ -1,5 +1,7 @@
 
-(def d app.dom)
+(import '../model' model)
+(import '../util' util)
+(import 'react-dom-factories' d)
 
 // Foter view
 (def Footer (fn []
@@ -18,13 +20,13 @@
                 : className (selectedCls 'completed') } 'Completed')) ])
         (d.button {
             : className 'clear-completed'
-            : onClick   app.destroyCompleted }
+            : onClick   model.destroyCompleted }
             'Clear completed') ])))
 
 // translate filter to css class 
 (def selectedCls (fn [f]
     (call (ifElse
-        (equals (app.stateGet 'filter'))
+        (equals (model.stateGet 'filter'))
         (always 'selected')
         (always '')) f)))
 
@@ -41,8 +43,4 @@
             (cond [
                 [(equals '1') (concat _ ' item left')]
                 [T            (concat _ ' items left')] ]))
-        (app.stateGet 'todos'))))
-
-
-// publish
-(alter app.Footer Footer)
+        (model.stateGet 'todos'))))

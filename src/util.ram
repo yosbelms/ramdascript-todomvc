@@ -1,0 +1,2 @@
+(def ENTER_KEY  13)
+(def ESCAPE_KEY 27)
