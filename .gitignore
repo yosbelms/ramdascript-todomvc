@@ -1,4 +1,7 @@
 /dev/
+/dist/
 /node_modules/
+/tests/
+/reports/
 compile.sh
 watch.sh
