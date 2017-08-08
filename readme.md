@@ -7,7 +7,7 @@ Clone the repo
 git clone https://github.com/yosbelms/ramdascript-todomvc.git
 ```
 
-Intall dependencies
+Install dependencies
 ```shell
 npm install
 ```
