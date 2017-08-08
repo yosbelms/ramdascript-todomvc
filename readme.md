@@ -12,14 +12,9 @@ Install dependencies
 npm install
 ```
 
-Install Webpack
+Build it
 ```shell
-npm install -g webpack
-```
-
-Run Webpack
-```shell
-webpack
+npm run build
 ```
 
 At this point you must serve `index.html`
