@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "",
   "license": "MIT",
+  "scripts": {
+    "build": "./node_modules/.bin/webpack"
+  },
   "dependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
